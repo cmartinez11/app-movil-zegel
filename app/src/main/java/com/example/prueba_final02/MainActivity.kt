@@ -53,9 +53,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun mostrarRegistrar(){
-        //lo pongo en comentario para activarlo luego, me está botando error
+        //funcion para redirigir a la pagina de registrar
         val intent = Intent(this,SignUpActivity::class.java)
-        //intent.putExtra("id","d4yr@2024")
         startActivity(intent)
     }
 
