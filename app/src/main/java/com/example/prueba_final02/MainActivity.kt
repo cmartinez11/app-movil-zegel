@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 //Importa la clase EditText para trabajar con campos de texto
 import android.widget.EditText
+import android.widget.Toast
 //Importa la función para habilitar el modo 'edge-to-edge' (opcional)
 import androidx.activity.enableEdgeToEdge
 //Importa la clase AlertDialog para crear cuadros de diálogo
@@ -48,9 +49,71 @@ class MainActivity : AppCompatActivity() {
             mostrarRegistrar()
         }
 
+        binding.tvOlvidoContrasena.setOnClickListener{
+            showForgotPassword()
+        }
+
         fireBaseAuth=FirebaseAuth.getInstance()
 
     }
+
+    fun showForgotPassword(){
+        // Crea un constructor de AlertDialog
+        val dialog = AlertDialog.Builder(this)
+        // Establece el título del cuadro de diálogo
+        dialog.setTitle("Cambiar contraseña")
+        // Establece el icono del cuadro de diálogo
+        dialog.setIcon(R.drawable.logo)
+
+        // Obtiene un objeto LayoutInflater
+        val inflater = LayoutInflater.from(this)
+        // Infla el layout del cuadro de diálogo de login
+        val layout = inflater.inflate(R.layout.forgot_password_layout, null)
+
+        // Obtiene la referencia al EditText del correo electrónico
+        val et_email : EditText = layout.findViewById(R.id.et_correo_forgot_password)
+
+        // Establece la vista del cuadro de diálogo con el layout inflado
+        dialog.setView(layout)
+
+        // Configura el botón positivo
+        dialog.setPositiveButton("Aceptar"){a,b ->
+            // Obtiene el texto ingresado en el correo electrónico
+            val email = et_email.text.toString()
+            forgotPassword(email)
+
+        }
+
+        // No hace nada en particular, solo cierra el cuadro de diálogo
+        dialog.setNegativeButton("Cancelar"){a,b ->
+        }
+
+        // Muestra el cuadro de diálogo de login
+        dialog.show()
+    }
+
+    fun forgotPassword(eml : String){
+
+        val alert = ProgressDialog(this)
+        alert.setTitle("QueTalTiendas")
+        alert.setIcon(R.drawable.logo)
+        alert.setMessage("Enviando...")
+        alert.show()
+
+        fireBaseAuth.sendPasswordResetEmail(eml).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                alert.dismiss()
+                Toast.makeText(this, "Revise su bandeja de entrada!", Toast.LENGTH_SHORT).show()
+            } else {
+                alert.dismiss()
+                showMessage(task.exception?.message.toString())
+            }
+        }
+    }
+
+
+
+
 
     fun mostrarRegistrar(){
         //funcion para redirigir a la pagina de registrar
